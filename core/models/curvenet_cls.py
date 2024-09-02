@@ -62,6 +62,7 @@ class CurveNet(nn.Module):
         l4_xyz, l4_points = self.cic42(l4_xyz, l4_points)
 
         x = self.conv0(l4_points)
+        print(x.shape)
         x_max = F.adaptive_max_pool1d(x, 1)
         x_avg = F.adaptive_avg_pool1d(x, 1)
         
@@ -70,3 +71,10 @@ class CurveNet(nn.Module):
         x = self.dp1(x)
         x = self.conv2(x)
         return x
+
+if __name__ == '__main__':
+    model = CurveNet(num_classes=40, k=20, setting='default').cuda()
+    print(model)
+    input = torch.randn(16, 3, 1024).cuda()
+    output = model(input)
+    print(output.size())

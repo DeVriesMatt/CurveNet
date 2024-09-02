@@ -136,7 +136,7 @@ class TransformerBlock(nn.Module):
 
         pos_encoder = self.mlp_h(relative_pos)
         feature = torch.cat([grouped_points_norm,
-                             feature.transpose(2, 1).unsqueeze(-1).repeat(1, 1, 1, self.K),
+                             feature.transpose(2, 1).unsqueeze(-1).expand(-1, -1, -1, self.K),
                              pos_encoder], dim=1)  # [B, 2C_in + d, S, K]
 
         feature_q = self.mlp(feature).max(-1)[0]  # [B, C, S]
@@ -503,6 +503,7 @@ class PointMIL(nn.Module):
     def interpret(self, model_output):
         return model_output['interpretation']
     def forward(self, x):
-        features = self.feature_extractor(x)
+        # print(x.shape)
+        features = self.feature_extractor(x.transpose(2, 1))
         # print(features[1].shape)
         return self.pooling(features)['bag_logits']

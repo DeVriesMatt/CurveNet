@@ -24,6 +24,8 @@ import numpy as np
 from torch.utils.data import DataLoader
 from util import cal_loss, IOStream
 import sklearn.metrics as metrics
+from models import PointMIL
+from tqdm import tqdm
 
 
 def _init_():
@@ -57,7 +59,8 @@ def train(args, io):
     io.cprint("Let's use" + str(torch.cuda.device_count()) + "GPUs!")
     
     # create model
-    model = CurveNet().to(device)
+    # model = CurveNet().to(device)
+    model = PointMIL().to(device)
     model = nn.DataParallel(model)
 
     if args.use_sgd:
@@ -84,7 +87,7 @@ def train(args, io):
         model.train()
         train_pred = []
         train_true = []
-        for data, label in train_loader:
+        for data, label in tqdm(train_loader):
             data, label = data.to(device), label.to(device).squeeze()
             data = data.permute(0, 2, 1)
             batch_size = data.size()[0]
@@ -123,7 +126,7 @@ def train(args, io):
         model.eval()
         test_pred = []
         test_true = []
-        for data, label in test_loader:
+        for data, label in tqdm(test_loader):
             data, label = data.to(device), label.to(device).squeeze()
             data = data.permute(0, 2, 1)
             batch_size = data.size()[0]
@@ -183,7 +186,7 @@ if __name__ == "__main__":
                         help='Name of the experiment')
     parser.add_argument('--dataset', type=str, default='modelnet40', metavar='N',
                         choices=['modelnet40'])
-    parser.add_argument('--batch_size', type=int, default=32, metavar='batch_size',
+    parser.add_argument('--batch_size', type=int, default=16, metavar='batch_size',
                         help='Size of batch)')
     parser.add_argument('--test_batch_size', type=int, default=16, metavar='batch_size',
                         help='Size of batch)')
