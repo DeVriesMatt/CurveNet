@@ -235,10 +235,11 @@ class InstancePooling(nn.Module):
         if self.non_linear:
             self.node_out = nn.Sequential(
                 nn.Linear(self.num_features, self.num_features * 2),
-                nn.BatchNorm1d(1024),
+                # nn.BatchNorm1d(1024),
                 nn.ReLU(True),
+                nn.Dropout(p=dropout),
                 nn.Linear(self.num_features * 2, self.num_features // 2),
-                nn.BatchNorm1d(1024),
+                # nn.BatchNorm1d(1024),
                 nn.ReLU(True),
                 nn.Dropout(p=dropout),
                 nn.Linear(self.num_features // 2, num_classes)
@@ -286,6 +287,7 @@ class AttentionPooling(nn.Module):
                 nn.Linear(self.num_features, self.num_features * 2),
                 nn.BatchNorm1d(self.num_features * 2),
                 nn.ReLU(True),
+                nn.Dropout(p=dropout),
                 nn.Linear(self.num_features * 2, self.num_features // 2),
                 nn.BatchNorm1d(self.num_features // 2),
                 nn.ReLU(True),
@@ -328,10 +330,11 @@ class AdditivePooling(nn.Module):
         if self.non_linear:
             self.node_out = nn.Sequential(
                 nn.Linear(self.num_features, self.num_features * 2),
-                nn.BatchNorm1d(1024),
+                # nn.BatchNorm1d(1024),
                 nn.ReLU(True),
+                nn.Dropout(p=dropout),
                 nn.Linear(self.num_features * 2, self.num_features // 2),
-                nn.BatchNorm1d(1024),
+                # nn.BatchNorm1d(1024),
                 nn.ReLU(True),
                 nn.Dropout(p=dropout),
                 nn.Linear(self.num_features // 2, num_classes)
@@ -405,10 +408,11 @@ class ConjunctivePooling(nn.Module):
         if self.non_linear:
             self.node_out = nn.Sequential(
                 nn.Linear(self.num_features, self.num_features * 2),
-                nn.BatchNorm1d(1024),
+                # nn.BatchNorm1d(1024),
                 nn.ReLU(True),
+                nn.Dropout(p=dropout),
                 nn.Linear(self.num_features * 2, self.num_features // 2),
-                nn.BatchNorm1d(1024),
+                # nn.BatchNorm1d(1024),
                 nn.ReLU(True),
                 nn.Dropout(p=dropout),
                 nn.Linear(self.num_features // 2, num_classes)
@@ -496,7 +500,9 @@ class PointMIL(nn.Module):
     def __init__(self,
                  feature_extractor=MedPTFeatureExtractor(use_norm=False),
                  pooling=AttentionPooling(num_features=256,
-                                          num_classes=40),):
+                                          num_classes=40,
+                                          apply_pos_encoding=False),
+                 ):
         super().__init__()
         self.feature_extractor = feature_extractor
         self.pooling = pooling
