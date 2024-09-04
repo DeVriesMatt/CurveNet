@@ -408,11 +408,11 @@ class ConjunctivePooling(nn.Module):
         if self.non_linear:
             self.node_out = nn.Sequential(
                 nn.Linear(self.num_features, self.num_features * 2),
-                # nn.BatchNorm1d(1024),
+                nn.BatchNorm1d(1024),
                 nn.ReLU(True),
-                nn.Dropout(p=dropout),
+                # nn.Dropout(p=dropout),
                 nn.Linear(self.num_features * 2, self.num_features // 2),
-                # nn.BatchNorm1d(1024),
+                nn.BatchNorm1d(1024),
                 nn.ReLU(True),
                 nn.Dropout(p=dropout),
                 nn.Linear(self.num_features // 2, num_classes)
