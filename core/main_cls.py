@@ -49,6 +49,7 @@ def _init_():
         os.makedirs('../checkpoints/'+args.exp_name+'/'+'models')
     os.system('cp main_cls.py ../checkpoints/'+args.exp_name+'/main_cls.py.backup')
     os.system('cp models/curvenet_cls.py ../checkpoints/'+args.exp_name+'/curvenet_cls.py.backup')
+    os.system('cp models/pointmil.py ../checkpoints/' + args.exp_name + '/pointmil.py.backup')
 
 def train(args, io):
     train_loader = DataLoader(ModelNet40(partition='train', num_points=args.num_points), num_workers=8,
