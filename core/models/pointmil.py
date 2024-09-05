@@ -501,7 +501,7 @@ class PointMIL(nn.Module):
                  feature_extractor=MedPTFeatureExtractor(use_norm=False),
                  pooling=AttentionPooling(num_features=256,
                                           num_classes=40,
-                                          apply_pos_encoding=False),
+                                          apply_pos_encoding=True),
                  ):
         super().__init__()
         self.feature_extractor = feature_extractor

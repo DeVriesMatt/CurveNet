@@ -78,6 +78,7 @@ def train(args, io):
     criterion = cal_loss
 
     best_test_acc = 0
+    best_test_avg_acc = 0
     for epoch in range(args.epochs):
         ####################
         # Train
@@ -142,10 +143,19 @@ def train(args, io):
         test_acc = metrics.accuracy_score(test_true, test_pred)
         outstr = 'Test %d, loss: %.6f, test acc: %.6f' % (epoch, test_loss*1.0/count, test_acc)
         io.cprint(outstr)
+
         if test_acc >= best_test_acc:
             best_test_acc = test_acc
             torch.save(model.state_dict(), '../checkpoints/%s/models/model.t7' % args.exp_name)
         io.cprint('best: %.3f' % best_test_acc)
+
+        avg_per_class_acc = metrics.balanced_accuracy_score(test_true, test_pred)
+        if avg_per_class_acc >= best_test_avg_acc:
+            best_test_avg_acc = avg_per_class_acc
+
+        io.cprint('best avg acc: %.3f' % best_test_avg_acc)
+
+
 
 def test(args, io):
     test_loader = DataLoader(ModelNet40(partition='test', num_points=args.num_points),
