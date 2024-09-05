@@ -499,7 +499,7 @@ class PositionalEncoding3D(nn.Module):
 class PointMIL(nn.Module):
     def __init__(self,
                  feature_extractor=MedPTFeatureExtractor(use_norm=False),
-                 pooling=AttentionPooling(num_features=256,
+                 pooling=ConjunctivePooling(num_features=256,
                                           num_classes=40,
                                           apply_pos_encoding=True),
                  ):
