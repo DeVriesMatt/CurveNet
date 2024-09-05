@@ -24,8 +24,9 @@ import numpy as np
 from torch.utils.data import DataLoader
 from util import cal_loss, IOStream
 import sklearn.metrics as metrics
-from models import PointMIL
+from models import PointMIL, ConjunctivePooling, AttentionPooling, InstancePooling, AdditivePooling
 from tqdm import tqdm
+
 
 
 def _init_():
@@ -60,7 +61,21 @@ def train(args, io):
     
     # create model
     # model = CurveNet().to(device)
-    model = PointMIL().to(device)
+    pooling_methods = {
+        "conjunctive": ConjunctivePooling,
+        "attention": AttentionPooling,
+        "instance": InstancePooling,
+        "additive": AdditivePooling,
+    }
+
+    pooling = pooling_methods[args.pooling](num_features=256,
+                                                num_classes=40,
+                                                dropout=0.5,
+                                                heads=8,
+                                                non_linear=True,
+                                                apply_pos_encoding=True,
+                                                args=args)
+    model = PointMIL(pooling=pooling).to(device)
     model = nn.DataParallel(model)
 
     if args.use_sgd:
@@ -221,6 +236,10 @@ if __name__ == "__main__":
                         help='num of points to use')
     parser.add_argument('--model_path', type=str, default='', metavar='N',
                         help='Pretrained model path')
+    parser.add_argument('--pooling',
+                        choices=['conjunctive', 'instance', 'attention', 'additive'],
+                        default='conjunctive', help='Pooling method')
+
     args = parser.parse_args()
 
     seed = np.random.randint(1, 10000)

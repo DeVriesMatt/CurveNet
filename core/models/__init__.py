@@ -1,1 +1,1 @@
-from .pointmil import PointMIL
+from .pointmil import PointMIL, AttentionPooling, AdditivePooling, InstancePooling, ConjunctivePooling
