@@ -287,7 +287,7 @@ class AttentionPooling(nn.Module):
                 nn.Linear(self.num_features, self.num_features * 2),
                 nn.BatchNorm1d(self.num_features * 2),
                 nn.ReLU(True),
-                nn.Dropout(p=dropout),
+                # nn.Dropout(p=dropout),
                 nn.Linear(self.num_features * 2, self.num_features // 2),
                 nn.BatchNorm1d(self.num_features // 2),
                 nn.ReLU(True),
@@ -499,7 +499,7 @@ class PositionalEncoding3D(nn.Module):
 class PointMIL(nn.Module):
     def __init__(self,
                  feature_extractor=MedPTFeatureExtractor(use_norm=False),
-                 pooling=ConjunctivePooling(num_features=256,
+                 pooling=AttentionPooling(num_features=256,
                                           num_classes=40,
                                           apply_pos_encoding=False),
                  ):
